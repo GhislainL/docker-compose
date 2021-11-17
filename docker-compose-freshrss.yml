@@ -1,0 +1,27 @@
+version: "3.3"
+
+services:
+  freshrss:
+    image: "freshrss/freshrss:1.18.1"
+    container_name: "freshrss"
+    environment:
+    - TZ=Europe/Paris
+    - 'CRON_MIN=4,34'
+    volumes:
+      - freshrss-data:/var/www/FreshRSS/data
+      - freshrss-extensions:/var/www/FreshRSS/extensions
+    networks:
+      - proxy
+    labels:
+      - "traefik.docker.network=proxy"
+      - "traefik.enable=true"
+      - "traefik.http.routers.freshrss.rule=Host(`rss.ghislain-lerda.fr`)"
+      - "traefik.http.routers.freshrss.entrypoints=websecure"
+      
+networks:
+  proxy:
+    external: true
+    
+volumes :
+  freshrss-data:
+  freshrss-extensions:
