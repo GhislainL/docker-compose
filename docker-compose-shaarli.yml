@@ -1,0 +1,26 @@
+version: "3.3"
+
+services:
+  freshrss:
+    image: "shaarli/shaarli:v0.12.1"
+    build: ./
+    container_name: "shaarli"
+    volumes:
+      - shaarli_cache:/var/www/shaarli/cache
+      - shaarli_data:/var/www/shaarli/data
+    networks:
+      - proxy
+    labels:
+      - "traefik.docker.network=proxy"
+      - "traefik.enable=true"
+      - "traefik.http.routers.shaarli.rule=Host(`shaarli.ghislain-lerda.fr`)"
+      - "traefik.http.routers.shaarli.entrypoints=websecure"
+      
+networks:
+  proxy:
+    external: true
+    
+volumes :
+  shaarli_cache:
+  shaarli_data:
+  
