@@ -1,0 +1,32 @@
+version: '2.1'
+
+volumes:
+  db-data:
+
+networks:
+  pg:
+    external: true
+
+services:
+  postgis:
+    image: kartoza/postgis:14-3.3
+    container_name: "postgis"
+    networks:
+      - pg
+    volumes:
+      - db-data:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=fightevents
+      - POSTGRES_USER=postgis
+      - POSTGRES_PASS=postgispwd
+      - ALLOW_IP_RANGE=0.0.0.0/0
+      - POSTGRES_MULTIPLE_EXTENSIONS=postgis,hstore,postgis_topology,postgis_raster,pgrouting
+    labels:
+      - "traefik.docker.network=pg"
+      - "traefik.enable=true"
+      - "traefik.http.routers.postgis.rule=Host(`postgis.fight-events.com`)"
+      - "traefik.http.routers.postgis.tls=true"
+      - "traefik.http.routers.postgis.entrypoints=websecure"
+    restart: on-failure
+    healthcheck:
+      test: "exit 0"
